@@ -1,5 +1,5 @@
 # WeiFeiFugger
-## Simple and dirty coded ESP32 WiFi Network and Portscanne
+## Simple and dirty coded ESP32 WiFi Network and Portscanner
 
 [![N|Solid](https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/v1397183645/50bf4fee6f1194cbd5064a4342c4ab75.png)](https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/v1397183645/50bf4fee6f1194cbd5064a4342c4ab75.png)
 

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>WeiFeiFugger</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/jquery.js"></script>
+    <style>
+        td {
+            width:0.1%;
+            white-space: nowrap;
+            color: rgb(255,255,255);
+        } 
+        #spinner-div {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body style="background: rgb(33,37,41);color: rgb(255,255,255);">
+    <nav class="navbar navbar-light navbar-expand-md">
+        <div class="container-fluid"><a class="navbar-brand" href="#" style="color: rgba(255,255,255,0.9);">WeiFeiFugger</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link active" style="color: rgb(255,255,255);" onclick="resetDevice();">Restart ESP</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 offset-xxl-3"><img class="img-fluid align-items-center align-content-center align-self-center" src="/weifei.png"></div>
+        </div>
+    </div>
+    <div id="wifilist" class="container">
+        <div class="row">
+            <div class="col"><button class="btn btn-secondary float-end" type="button" style="margin-right: 0px;margin-left: 0px;" onclick="getNetworks();">Scan WiFi</button></div>
+            <div class="col-md-12">
+                <div class="table-responsive" style="height: 241px;">
+                    <table id="ssids" class="table">
+                        <thead>
+                            <tr>
+                                <th style="color: rgb(255,255,255);">SSID</th>
+                                <th style="color: rgb(255,255,255);">SECURITY</th>
+                                <th style="color: rgb(255,255,255);">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="connectedtoWiFi" class="container" style="visibility:hidden">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="pingSuccess" class="alert alert-success" role="alert" style="visibility:hidden">
+
+                  </div>
+                  <div id="pingAlert" class="alert alert-warning" role="alert" style="visibility:hidden">
+
+                </div>
+                  <div id="pingFail" class="alert alert-danger" role="alert" style="visibility:hidden">
+
+                  </div>                  
+                <p>Connected with IP:<span class="text-success" id="apIP" style="margin-left: 10px;"></span>&nbsp;</p><span>IP Range:&nbsp;</span><span id="iprange"class="text-warning">Text</span><button class="btn btn-success" type="button" style="margin-left: 10px;" onclick="scanIPRange();">Scan IP Range</button>
+                <hr><select id="clientResults" onchange="val()" class="form-select-sm"></select><button class="btn btn-danger btn-sm" type="button" style="margin-top: -4px;margin-left: 5px;" onclick="startportScan();">Port Scan</button>
+                <hr>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12"><textarea id="debugtext" style="width: 100%;height: 150px;background: rgb(23,23,23);color: rgb(251,249,249);" readonly=""></textarea></div>
+        </div>
+    </div>
+    <div id="spinner-div" class="pt-5">
+        <div class="spinner-border text-primary" role="status">
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="setup-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #444444;">
+                    <h4 class="modal-title">Connection Setup</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="background: #414141;">
+                    <p>SSID:&nbsp;<span id="modal_ssid_name">Text</span></p>
+                    <form><input type="password" class="form-control" type="text" id="modal_password"><small class="form-text">Enter the password for SSID</small></form>
+                </div>
+                <div class="modal-footer" style="background: #444444;"><button class="btn btn-dark" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-dark" id="modal_connect" type="button" onclick="connectAPmodal();">Connect</button></div>
+            </div>
+        </div>
+    </div>
+    <footer class="text-center bg-dark">
+        <div class="container text-white py-4 py-lg-5">
+            <ul class="list-inline">
+                <li class="list-inline-item me-4"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-facebook text-light">
+                        <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"></path>
+                    </svg></li>
+                <li class="list-inline-item me-4"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-twitter text-light">
+                        <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"></path>
+                    </svg></li>
+                <li class="list-inline-item"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-instagram text-light">
+                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"></path>
+                    </svg></li>
+            </ul>
+            <p class="text-muted mb-0">Copyright © 2022 Clusterzx</p>
+        </div>
+    </footer>
+    <script src="/bootstrap.js"></script>
+    <script>
+        var clientToScan;
+        function val() {
+            d = document.getElementById("clientResults").value;
+            clientToScan = d;
+        }
+        var iprangeModified;
+        var iprangeModifiedRequest;
+        var pingResultsRecieved = false;
+        var portResultsRecieved = false;
+        $( document ).ready(function() {
+            checkWiFiStatus();
+            checkPingResults();
+            checkPortResults();
+        });
+        function startportScan() {
+            $('#pingFail').css('visibility','hidden');
+            $('#pingSuccess').css('visibility','hidden');
+            $("#pingFail").text("Ping already running/not finished yet. Sry bro :/"); 
+                $.ajax({
+                    type: 'GET',
+                    url: '/portStart?ip='+ clientToScan,
+                    async: true,
+                    start_time: new Date().getTime(),
+                    success: (data) => {
+                        console.log(data);
+                    },
+                    complete: function () {
+                        $('#debugtext').append("Scan ports for " + clientToScan + "\n");
+                    }
+                });
+        }
+        function checkPortResults(){
+            if (portResultsRecieved == false) {
+                $.ajax({
+                type: 'GET',
+                url: '/portResults',
+                async: true,
+                //dataType: "json",
+                start_time: new Date().getTime(),
+                success: (data) => {
+                    console.log(data);
+                    $('#pingSuccess').css('visibility','visible');
+                    $("#pingSuccess").text("Congrats ports were scanned..."); 
+                    portResultsRecieved = true;
+
+                    var badJson = data;
+                    var goodJson = badJson.replace(/'/g, '"');
+                    var betterJson = goodJson.replace(/,]}/, ']}');
+                    console.log("BJSON: " + betterJson);
+                    const datax = JSON.parse(betterJson);
+                    txtArea = document.getElementById("debugtext");
+                    txtArea.value = "";
+                    for (let i = 0; i < datax["ports"].length; i++) {
+                        const clip = datax["ports"][i].port;
+                        txtArea.value += "Port open on: " + clip + '\r\n';
+                    }
+                },
+                error: (data) => {
+                    //console.log(data);
+                }
+            });
+            setTimeout(checkPortResults, 3000);   
+            }
+        }
+        function checkPingResults(){
+            if (pingResultsRecieved == false) {
+                $.ajax({
+                type: 'GET',
+                url: '/pingResults',
+                async: true,
+                //dataType: "json",
+                start_time: new Date().getTime(),
+                success: (data) => {
+                    console.log(data);
+                    $('#pingAlert').css('visibility','hidden');
+                    $('#pingSuccess').css('visibility','visible');
+                    $("#pingSuccess").text("Congrats network was scanned..."); 
+                    pingResultsRecieved = true;
+
+                    var badJson = data;
+                    var goodJson = badJson.replace(/'/g, '"');
+                    var betterJson = goodJson.replace(/,]}/, ']}');
+                    console.log("BJSON: " + betterJson);
+                    var ele = document.getElementById('clientResults');
+                    const datax = JSON.parse(betterJson);
+                    for (let i = 0; i < datax["clients"].length; i++) {
+                        const clip = datax["clients"][i].clientip;
+                        ele.innerHTML = ele.innerHTML +
+                            '<option value="' + clip + '">' + clip + '</option>';
+                    }
+                },
+                error: (data) => {
+                    //console.log(data);
+                }
+            });
+            setTimeout(checkPingResults, 3000);
+          }
+        }
+        function checkWiFiStatus(){
+            $.ajax({
+                type: 'GET',
+                url: '/connectionInfo',
+                async: true,
+                start_time: new Date().getTime(),
+                success: (data) => {
+                    console.log(data);
+                    var jsonConnection = JSON.parse(data);
+                    if (jsonConnection["connectionstatus"] == 3) {
+                        $('#connectedtoWiFi').css('visibility','visible');
+                        $('#wifilist').css('display','none');
+                        $('#apIP').text(jsonConnection["ipaddress"]);
+                        const iprange = jsonConnection["ipaddress"].split(".")
+                        iprangeModified = iprange[0]+"."+iprange[1]+"."+iprange[2]+"."+"1-255"
+                        iprangeModifiedRequest = iprange[0]+"."+iprange[1]+"."+iprange[2]+"."
+                        $('#iprange').text(iprangeModified);
+                    }else{
+                        $('#connectedtoWiFi').css('visibility','hidden');
+                        const box = document.getElementById('wifilist');
+                        box.style.removeProperty('display');
+                    }
+                },
+            });
+            setTimeout(checkWiFiStatus, 3000);
+        }
+        function getNetworks(){
+            $('#spinner-div').show();
+            $.ajax({
+                type: 'GET',
+                url: '/scanNetwork',
+                async: true,
+                start_time: new Date().getTime(),
+                success: (data) => {
+                    var badJson = data;
+                    var goodJson = badJson.replace(/'/g, '"');
+                    var betterJson = goodJson.replace(/,]}/, ']}');
+                    console.log(betterJson);
+                    const datax = JSON.parse(betterJson);
+                    for (let i = 0; i < datax["accesspoints"].length; i++) {
+                        const x_ssid = datax["accesspoints"][i].ssid;
+                        const x_encryption = datax["accesspoints"][i].encryption;
+                        markup = "<tr><td>" + x_ssid + "</td><td>" + x_encryption + "</td>" + '<td><div class="btn-group" role="group"><button class="btn btn-success" type="button" onclick="connectAP(\'' + x_ssid +'\',\''+ x_encryption +'\');">Connect</button><div class="btn-group"></div></td></tr>';
+                        tableBody = $("#ssids > tbody");
+                        tableBody.append(markup);
+                    }
+                },
+                complete: function () {
+                    $('#spinner-div').hide();
+                    $('#debugtext').append("Scan finished... " + 'took '+(new Date().getTime() - this.start_time)+' ms' + "\n");
+                }
+            });
+        }
+        function connectAP(ssid,encryption) {
+            if (encryption == "SECURED") {
+                $('#modal_ssid_name').text(ssid);
+                $('#setup-modal').modal('show');
+            } else {
+                $('#spinner-div').show();
+                $.ajax({
+                    type: 'GET',
+                    url: '/connectAP?ssid= '+ ssid + '&encryption=' + encryption + '&password=',
+                    async: true,
+                    start_time: new Date().getTime(),
+                    success: (data) => {
+                        console.log(data);
+                    },
+                    complete: function () {
+                        $('#spinner-div').hide();
+                        $('#debugtext').append("Connected to AP... " + 'took '+(new Date().getTime() - this.start_time)+' ms' + "\n");
+                    }
+                });
+            }
+        }
+        function connectAPmodal() {
+            var ssid = $('#modal_ssid_name').text();
+            var ssid = ssid.replace(" ", "");
+            var password = $('#modal_password').val();
+            var encryption = "SECURED";
+            console.log(ssid + " " + password);
+            $('#setup-modal').modal('hide');
+            $('#spinner-div').show();
+            $.ajax({
+                type: 'GET',
+                url: '/connectAP?ssid= '+ ssid + '&encryption=' + encryption + '&password=' + password,
+                async: true,
+                start_time: new Date().getTime(),
+                success: (data) => {
+                    console.log(data);
+                },
+                complete: function () {
+                    $('#spinner-div').hide();
+                    $('#debugtext').append("Connection to AP successfully... " + 'took '+(new Date().getTime() - this.start_time)+' ms' + "\n");
+                }
+            });
+        }
+        function resetDevice(){
+            $('#spinner-div').show();
+            $.ajax({
+                type: 'GET',
+                url: '/reboot',
+                async: true,
+                start_time: new Date().getTime(),
+                success: (data) => {
+                    console.log(data);
+                },
+                complete: function () {
+                    $('#spinner-div').hide();
+                    $('#debugtext').append("Reboot command sent " + 'took '+(new Date().getTime() - this.start_time)+' ms' + "\n");
+                }
+            });
+        }
+        function scanIPRange() {
+            $.ajax({
+                type: 'GET',
+                url: '/pingStart?ip=' + iprangeModifiedRequest,
+                async: true,
+                start_time: new Date().getTime(),
+                success: (data) => {
+                    console.log(data);
+                    $('#pingAlert').css('visibility','visible');
+                    $("#pingAlert").text("Waiting for results..."); 
+                },
+                complete: function () {
+                    $('#debugtext').append("Ping command sent " + 'took '+(new Date().getTime() - this.start_time)+' ms' + "\n");
+                },
+                error: (data) => { 
+                    $('#pingFail').css('visibility','visible');
+                    $("#pingFail").text("Ping already running/not finished yet. Sry bro :/"); 
+                }
+            }); 
+        }
+    </script>
+</body>
+
+</html>
